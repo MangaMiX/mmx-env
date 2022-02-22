@@ -132,3 +132,26 @@ GET /mangamix/_search
 }
 ```
 
+```
+GET /mangamix/_search
+{
+  "from": 0,
+  "size": 30,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "exists": {
+            "field": "audio"
+          }
+        },
+        {
+          "exists": {
+            "field": "video"
+          }
+        }
+      ]
+    }
+  }
+}
+```
