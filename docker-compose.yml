@@ -19,7 +19,12 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - elk
+      - mmx
+    healthcheck:
+      test: [ "CMD", "curl", "http://elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=1s"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
   logstash:
     build:
@@ -37,7 +42,7 @@ services:
     environment:
       LS_JAVA_OPTS: -Xmx256m -Xms256m
     networks:
-      - elk
+      - mmx
     depends_on:
       - elasticsearch
 
@@ -51,7 +56,7 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - elk
+      - mmx
     depends_on:
       - elasticsearch
 
@@ -65,14 +70,67 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
     volumes:
-      - D:\minio:/data
+      - C:\minio:/data
     networks:
-      - s3
+      - mmx
+
+  mmx-anime:
+    build:
+      context: ../mmx-anime/
+      dockerfile: ../mmx-anime/Dockerfile
+    environment:
+      ES_HOST: 'http://elasticsearch:9200'
+      ES_USER: 'elastic'
+      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_INDEX: 'mangamix'
+      #MMX_EXTRACT_LIMIT: '100'
+    networks:
+      - mmx
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  mmx-audio:
+    build:
+      context: ../mmx-audio/
+      dockerfile: ../mmx-audio/Dockerfile
+    environment:
+      ES_HOST: 'http://elasticsearch:9200'
+      ES_USER: 'elastic'
+      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_INDEX: 'mangamix'
+      S3_HOST: 'minio:9000'
+      S3_ACCESS_KEY: 'minio'
+      S3_SECRET_KEY: 'minio123'
+      S3_BUCKET: 'mangamix'
+      MMX_EXTRACT_LIMIT: '1'
+    networks:
+      - mmx
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  mmx-video:
+    build:
+      context: ../mmx-video/
+      dockerfile: ../mmx-video/Dockerfile
+    environment:
+      ES_HOST: 'http://elasticsearch:9200'
+      ES_USER: 'elastic'
+      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_INDEX: 'mangamix'
+      S3_HOST: 'minio:9000'
+      S3_ACCESS_KEY: 'minio'
+      S3_SECRET_KEY: 'minio123'
+      S3_BUCKET: 'mangamix'
+    networks:
+      - mmx
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
 networks:
-  elk:
-    driver: bridge
-  s3:
+  mmx:
     driver: bridge
 
 volumes:
