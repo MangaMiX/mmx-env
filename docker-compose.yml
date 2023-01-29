@@ -81,9 +81,9 @@ services:
     environment:
       ES_HOST: 'http://elasticsearch:9200'
       ES_USER: 'elastic'
-      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_PASSWORD: 'i2L4ayKTlYZxMdLnwdYs'
       ES_INDEX: 'mangamix'
-      #MMX_EXTRACT_LIMIT: '100'
+      MMX_EXTRACT_LIMIT: '30'
     networks:
       - mmx
     depends_on:
@@ -97,7 +97,7 @@ services:
     environment:
       ES_HOST: 'http://elasticsearch:9200'
       ES_USER: 'elastic'
-      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_PASSWORD: 'i2L4ayKTlYZxMdLnwdYs'
       ES_INDEX: 'mangamix'
       S3_HOST: 'minio:9000'
       S3_ACCESS_KEY: 'minio'
@@ -117,7 +117,7 @@ services:
     environment:
       ES_HOST: 'http://elasticsearch:9200'
       ES_USER: 'elastic'
-      ES_PASSWORD: 'dzNIt6zKlFN5ynoOlnsD'
+      ES_PASSWORD: 'i2L4ayKTlYZxMdLnwdYs'
       ES_INDEX: 'mangamix'
       S3_HOST: 'minio:9000'
       S3_ACCESS_KEY: 'minio'

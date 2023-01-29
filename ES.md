@@ -7,6 +7,9 @@ This file list some elasticsearch commands.
 ```
 PUT _index_template/mangamix-template
 {
+  "index_patterns": [
+      "mangamix-*"
+  ],
   "template": {
     "settings": {},
     "mappings": {
